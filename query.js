@@ -248,3 +248,69 @@ function renderStatBar(label, value) {
         </div>
     `;
 }
+function mostrarDetalle(nombre) {
+  const modal = new bootstrap.Modal(document.getElementById("pokemonModal"));
+  $("#modalContent").html("<p class='text-center'>Cargando...</p>");
+
+  $.get(`https://pokeapi.co/api/v2/pokemon/${nombre}`)
+    .then((data) => {
+      $.get(`https://pokeapi.co/api/v2/pokemon-species/${nombre}`)
+        .then((species) => {
+          const tipos = data.types.map((t) => t.type.name);
+          const typeIcons = tipos
+  .map((t) => `<img src="${TYPE_ICON_BASE}${t}.svg" alt="${t}" title="${t}" width="24" height="24" class="me-1">`)
+  .join("");
+
+          const alturaM = (data.height / 10).toFixed(1);
+          const pesoKg = (data.weight / 10).toFixed(1);
+
+          const entrada = species.flavor_text_entries.find(
+            (entry) => entry.language.name === "es"
+          );
+          const descripcion = entrada
+            ? entrada.flavor_text.replace(/[\f\n\r]/g, " ")
+            : "Sin descripción disponible";
+
+          const html = `
+            <div class="pokemon-card">
+              <div class="left-info">
+                <img src="${
+                  data.sprites.other["official-artwork"].front_default ||
+                  data.sprites.front_default
+                }" alt="${data.name}" class="img-fluid mb-3">
+                <h4 class="text-capitalize mb-2">${data.name}</h4>
+                <div class="mb-2">${typeIcons}</div>
+                <p class="mb-1"><strong>Altura:</strong> ${alturaM} m</p>
+                <p class="mb-1"><strong>Peso:</strong> ${pesoKg} kg</p>
+              </div>
+              <div class="right-stats">
+                <div class="stats-wrapper">
+                  <h6 class="mb-3">Descripción</h6>
+                  <p class="mb-3">${descripcion}</p>
+                  <h6 class="mb-3">Habilidades</h6>
+                  ${renderStatBar("Velocidad", getStat(data.stats, "speed"))}
+                  ${renderStatBar("Defensa", getStat(data.stats, "defense"))}
+                  ${renderStatBar("Ataque", getStat(data.stats, "attack"))}
+                  ${renderStatBar("Vida", getStat(data.stats, "hp"))}
+                </div>
+              </div>
+            </div>
+          `;
+
+          $("#modalContent").html(html);
+          modal.show();
+        })
+        .catch(() => {
+          $("#modalContent").html(
+            "<p class='text-center text-danger'>No se pudo cargar la descripción</p>"
+          );
+          modal.show();
+        });
+    })
+    .catch(() => {
+      $("#modalContent").html(
+        "<p class='text-center text-danger'>No se pudieron cargar los detalles</p>"
+      );
+      modal.show();
+    });
+}
