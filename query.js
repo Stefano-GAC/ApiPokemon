@@ -7,30 +7,58 @@ let tipoLista = [];
 const TYPE_ICON_BASE =
   "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/";
 
+let todosLosPokemon = [];
+
+function cargarTodosLosPokemon() {
+  $.get("https://pokeapi.co/api/v2/pokemon?limit=1000")
+    .then((response) => {
+      todosLosPokemon = response.results; // [{ name, url }]
+    });
+}
+
 $(document).ready(function () {
   const lista = $(".item-list");
   cargarTipos(lista);
   cargarGaleria(currentPage);
-
+  cargarTodosLosPokemon();
   let delayTimer;
-  $(".left-column input").keyup(function (event) {
-    clearTimeout(delayTimer);
-    if (event.key === "Enter") {
-      $("#buscar").hide();
+$(".left-column input").keyup(function (event) {
+  clearTimeout(delayTimer);
+  const texto = $(this).val().toLowerCase().trim();
+
+  if (event.key === "Enter") {
+    $("#buscar").hide();
+    return;
+  }
+
+  if (texto === "") {
+    tipoActual = null;
+    currentPage = 1;
+    cargarGaleria(currentPage);
+    $("#prevPage").prop("disabled", currentPage === 1);
+    return;
+  }
+
+  delayTimer = setTimeout(() => {
+    tipoActual = null;
+    const coincidencias = todosLosPokemon.filter((p) =>
+      p.name.includes(texto)
+    );
+
+    $(".gallery .row").empty();
+
+    if (coincidencias.length === 0) {
+      $(".gallery .row").html(
+        '<p class="text-center text-danger">No se encontraron coincidencias</p>'
+      );
       return;
     }
-    if ($(this).val().trim() === "") {
-      tipoActual = null;
-      currentPage = 1;
-      cargarGaleria(currentPage);
-      $("#prevPage").prop("disabled", currentPage === 1);
-      return;
-    }
-    delayTimer = setTimeout(() => {
-      tipoActual = null;
-      cargarBusqueda($(this).val());
-    }, 600);
-  });
+
+    coincidencias.slice(0, 9).forEach((p) => {
+      $.get(p.url).then((data) => renderSimpleCard(data));
+    });
+  }, 500);
+});
 
   $("#prevPage").click(function () {
     if (tipoActual) {
