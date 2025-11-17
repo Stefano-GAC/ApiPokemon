@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
   height: 100%;
   margin: 0;
   background-color: #ffc64b;
@@ -49,7 +50,7 @@ body, html {
 .pokemon-tile {
   background-color: #fff3b0;
   border-radius: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
 }
@@ -65,7 +66,7 @@ body, html {
   border-radius: 50%;
   background-color: #fff;
   padding: 5px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .pokemon-number {
@@ -90,7 +91,7 @@ body, html {
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -104,7 +105,7 @@ body, html {
 }
 
 .modal-body .left-info img {
-  max-height: 150px;
+  max-height: 800px;
 }
 
 .modal-body .right-stats {
@@ -119,6 +120,7 @@ body, html {
   display: block;
   font-weight: bold;
   margin-bottom: 4px;
+  font-size: 2rem;
 }
 
 .modal-body .bar {
@@ -141,6 +143,12 @@ body, html {
   .modal-body .right-stats {
     width: 60%;
   }
+
+  .modal-body .right-stats h6 {
+    font-size: 3rem; 
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
 }
 
 /* Paginación estilizada */
@@ -148,7 +156,7 @@ body, html {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 60px; /* 👈 separación clara debajo de la galería */
+  margin-top: 60px; 
   margin-bottom: 40px;
 }
 
@@ -171,4 +179,8 @@ body, html {
   color: #333;
 }
 
-
+.stats-wrapper {
+  max-width: 300px;
+  margin: 0 auto;     
+  margin-top: 5rem; 
+}
